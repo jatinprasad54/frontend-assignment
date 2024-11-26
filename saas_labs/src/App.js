@@ -1,20 +1,23 @@
 import { useEffect, useState, useCallback } from "react";
 import "./App.css";
 import Pagination from "./components/Pagination";
+import { fetchProjects } from "./util/api";
 
 const pageSize = 5;
-const url = "https://raw.githubusercontent.com/saaslabsco/frontend-assignment/refs/heads/master/frontend-assignment.json";
 function App() {
   const [currentPage, SetCurrentPage] = useState(1);
   const [data, setData] = useState([]);
   const [filteredData, setFilteredData] = useState([]);
   
   const fetchData = useCallback(async () => {
-   const res = await fetch(url);
-   const data = await res.json();
-   setData(data);
-   const newData = data.slice(0,pageSize);
-   setFilteredData(newData);
+      try {
+        const data = await fetchProjects();
+        setData(data);
+        const newData = data.slice(0,pageSize);
+        setFilteredData(newData);
+      } catch (error) {
+        console.error(error);
+    };
   },[]) 
   
   const handlePageChange = (page) => {
